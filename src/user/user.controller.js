@@ -4,6 +4,8 @@ import fs from "fs/promises"
 import {join, dirname} from "path"
 import { fileURLToPath } from "url"
 
+const __dirname =  dirname(fileURLToPath(import.meta.url))
+
 export const getUserById = async (req, res) => {
     try{
         const { uid } = req.params;
@@ -143,7 +145,19 @@ export const updateProfilePicture = async (req, res) => {
             })
         }
 
-        const user = await User.findById(uid)
+        if(user.profilePicture){
+            const oldProfilePicture = join(__dirname, "../uploads/profile-picture", user.profilePicture)
+            await fs.unlink(oldProfilePicture)
+        }
+
+        user.profilePicture = newProfilePicture
+        await user.save()
+
+        return res.status(200).json({
+            success: true,
+            message: "Foto de perfil actualizada",
+            user
+        })
 
     } catch (error) {
         return res.status(500).json({
