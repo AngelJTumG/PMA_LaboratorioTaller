@@ -125,3 +125,30 @@ export const saveAppointment = async (req, res) => {
       });
     }
   };
+
+  export const cancelarCita = async (req, res) => {
+    try {
+      const { appointmentId } = req.params;
+  
+      const appointment = await Appointment.findByIdAndDelete(appointmentId);
+  
+      if (!appointment) {
+        return res.status(404).json({
+          success: false,
+          msg: "No se encontró la cita",
+        });
+      }
+  
+      return res.status(200).json({
+        success: true,
+        msg: "Cita cancelada exitosamente",
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        success: false,
+        msg: "Error al cancelar la cita",
+        error: error.message,
+      });
+    }
+  };
