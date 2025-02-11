@@ -126,7 +126,7 @@ export const saveAppointment = async (req, res) => {
     }
   };
 
-  export const cancelarCita = async (req, res) => {
+  export const deleteAppointment = async (req, res) => {
     try {
       const { appointmentId } = req.params;
   
