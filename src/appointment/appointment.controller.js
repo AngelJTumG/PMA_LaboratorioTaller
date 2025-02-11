@@ -54,5 +54,31 @@ export const saveAppointment = async (req, res) => {
       msg: "Error al crear la cita", 
       error 
     }); 
-  }
-};
+  }};
+
+  export const listAppointmentsByUser = async (req, res) => {
+    try {
+      const userId = req.params.userId;
+  
+      const appointments = await Appointment.findByUser(userId);
+  
+      if (!appointments.length) {
+        return res.status(404).json({
+          success: false,
+          msg: "No se encontraron citas para este usuario",
+        });
+      }
+  
+      return res.status(200).json({
+        success: true,
+        appointments,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        success: false,
+        msg: "Error al listar las citas",
+        error,
+      });
+    }
+  };
