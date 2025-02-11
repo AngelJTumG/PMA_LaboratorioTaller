@@ -1,6 +1,7 @@
 import Pet from "../pet/pet.model.js";
 import Appointment from "../appointment/appointment.model.js";
 import { parse } from "date-fns";
+import User from '../user/user.model.js';
 
 export const saveAppointment = async (req, res) => {
   try {
@@ -57,10 +58,11 @@ export const saveAppointment = async (req, res) => {
   }};
 
   export const listAppointmentsByUser = async (req, res) => {
-    try {
-      const userId = req.params.userId;
-  
-      const appointments = await Appointment.findByUser(userId);
+    let { userId } = req.params;
+    userId = userId.trim();
+
+  try {
+    const appointments = await Appointment.find({ user: userId });
   
       if (!appointments.length) {
         return res.status(404).json({
@@ -74,11 +76,11 @@ export const saveAppointment = async (req, res) => {
         appointments,
       });
     } catch (error) {
-      console.error(error);
+      console.error("Error al listar las citas:", error);
       return res.status(500).json({
         success: false,
         msg: "Error al listar las citas",
-        error,
+        error: error.message || error,
       });
     }
   };
